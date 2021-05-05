@@ -2,8 +2,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class PayRollFileInputTest {
+public class PayRoll_IOTest {
     @Test
     public void given3EmployeesWhenWrittenToFileShouldMatchEmployeeEntries() {
         PayRoll[] arrayOfEmployees = {
@@ -17,5 +18,15 @@ public class PayRollFileInputTest {
         testPayRollOperation.printData(PayRollOperation.IOService.FILE_IO);
         long entries = testPayRollOperation.countEntries(PayRollOperation.IOService.FILE_IO);
         Assertions.assertEquals(3,entries);
+    }
+
+    @Test
+    public void givenEmployeePayRollInDB_WhenRetrieved_ShouldMatchEmployeeCount(){
+        PayRollOperation dbPayRoll =  new PayRollOperation();
+
+        List<PayRoll>  dbPayRollData = dbPayRoll.readEmployeeDetails(PayRollOperation.IOService.DB_IO);
+
+        Assertions.assertEquals(8,dbPayRollData.size());
+
     }
 }
