@@ -25,7 +25,7 @@ public class PayRoll_IOTest {
     */
 
     @Test
-    public void givenEmployeePayRollInDB_WhenRetrieved_ShouldMatchEmployeeCount(){
+    public void givenEmployeePayRollInDB_WhenRetrieved_ShouldMatchEmployeeCount() throws Exceptions {
 
         PayRollOperation dbPayRoll =  new PayRollOperation();
 

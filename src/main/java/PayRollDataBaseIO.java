@@ -9,7 +9,7 @@ public class PayRollDataBaseIO {
      * @return
      */
 
-    public List<PayRoll> readData() {
+    public List<PayRoll> readData() throws Exceptions {
         String sqlQuery = "SELECT * FROM employee_details;";
         List<PayRoll> payRollList = new ArrayList<>();
 
@@ -28,9 +28,12 @@ public class PayRollDataBaseIO {
 
                 payRollList.add(new PayRoll(id,name,gender,phoneNumber,startDate));
             }
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        //Catching Sql Exception
+        } catch (SQLException e) {
+            throw new Exceptions(Exceptions.exceptionType.SQL_EXCEPTION,"YOUR SQL CONNECTION WAS NOT CORRECT, CHECK AGAIN");
+            //Catching Null pointer exception
+        }catch (NullPointerException e){
+            throw new Exceptions(Exceptions.exceptionType.NULL_INPUT,"YOUR INPUT WAS NULL, PLEASE CHECK AGAIN");
         }
 
         return payRollList;

@@ -63,7 +63,7 @@ public class PayRollOperation {
      * @return
      */
 
-    public List<PayRoll> readEmployeeDetails(IOService ioService) {
+    public List<PayRoll> readEmployeeDetails(IOService ioService) throws Exceptions {
         if (ioService.equals(IOService.DB_IO))
             this.payRollList = new PayRollDataBaseIO().readData();
         return this.payRollList;
