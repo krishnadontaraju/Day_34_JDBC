@@ -20,8 +20,13 @@ public class PayRoll_IOTest {
         Assertions.assertEquals(3,entries);
     }
 
+    /*
+    * testing the operation of the database IO
+    */
+
     @Test
     public void givenEmployeePayRollInDB_WhenRetrieved_ShouldMatchEmployeeCount(){
+
         PayRollOperation dbPayRoll =  new PayRollOperation();
 
         List<PayRoll>  dbPayRollData = dbPayRoll.readEmployeeDetails(PayRollOperation.IOService.DB_IO);
