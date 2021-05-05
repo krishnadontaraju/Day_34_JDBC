@@ -57,6 +57,5 @@ public class PayRollDataBaseIO {
         System.out.println("Connected ");
 
         return  databaseConnection;
-
     }
 }
