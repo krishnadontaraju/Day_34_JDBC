@@ -57,6 +57,12 @@ public class PayRollOperation {
         return new PayRollFileIO().readData();
     }
 
+    /**
+     * use enum to classify the IO stream and use the respective class to perform operations
+     * @param ioService
+     * @return
+     */
+
     public List<PayRoll> readEmployeeDetails(IOService ioService) {
         if (ioService.equals(IOService.DB_IO))
             this.payRollList = new PayRollDataBaseIO().readData();

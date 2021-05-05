@@ -14,6 +14,14 @@ public class PayRoll {
         this.employeeSalary = employeeSalary;
     }
 
+    /**
+     * new Constructor for database IO
+     * @param id
+     * @param name
+     * @param gender
+     * @param phoneNumber
+     * @param startDate
+     */
     public PayRoll(int id, String name, String gender, int phoneNumber, Date startDate) {
 
         employeeId = id;

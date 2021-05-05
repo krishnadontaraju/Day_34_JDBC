@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PayRollDataBaseIO {
+    /**
+     * read the entries from database and store it to payroll list
+     * @return
+     */
+
     public List<PayRoll> readData() {
         String sqlQuery = "SELECT * FROM employee_details;";
         List<PayRoll> payRollList = new ArrayList<>();
@@ -31,6 +36,11 @@ public class PayRollDataBaseIO {
         return payRollList;
     }
 
+    /**
+     * to setup communicable connection with the database
+     * @return
+     * @throws SQLException
+     */
     private Connection getConnection() throws SQLException {
 
         String mySqlUrl = "jdbc:mysql://localhost:3306/payroll_operations";
