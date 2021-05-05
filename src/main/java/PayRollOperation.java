@@ -1,21 +1,16 @@
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class PayRollOperation {
 
-    public enum IOService {
-        CONSOLE_IO, FILE_IO, DB_IO, REST_IO
+    public List<PayRoll> payRollList;
+
+    public PayRollOperation() {
     }
-    
-    private List<PayRoll> payRollList;
 
-    public PayRollOperation(){}
-
-    public PayRollOperation(List<PayRoll> payRollList){}
+    public PayRollOperation(List<PayRoll> payRollList) {
+    }
 
     public static void main(String[] args) {
 
@@ -28,7 +23,7 @@ public class PayRollOperation {
         newPayRollOperation.writePayRollDetails(IOService.FILE_IO);
     }
 
-    private void readPayRollDetails(Scanner inputFetcher){
+    private void readPayRollDetails(Scanner inputFetcher) {
         System.out.println("WHAT IS THE EMPLOYEE ID ?");
         int employeeId = inputFetcher.nextInt();
 
@@ -39,28 +34,36 @@ public class PayRollOperation {
         double employeeSalary = inputFetcher.nextDouble();
     }
 
-    public void writePayRollDetails(IOService ioService){
-        if(ioService.equals(IOService.CONSOLE_IO)) {
+    public void writePayRollDetails(IOService ioService) {
+        if (ioService.equals(IOService.CONSOLE_IO)) {
             System.out.println("\n Writing Employee Payroll Roster to Console\n" + payRollList);
-        }
-        else if(ioService.equals(IOService.FILE_IO)){
+        } else if (ioService.equals(IOService.FILE_IO)) {
             new PayRollFileIO().writeDataToAFile(payRollList);
         }
     }
 
     public void printData(IOService ioService) {
-        if(ioService.equals(IOService.FILE_IO))
+        if (ioService.equals(IOService.FILE_IO))
             new PayRollFileIO().printDataFromFile();
     }
 
     public long countEntries(IOService ioService) {
-        if(ioService.equals(IOService.FILE_IO));
+        if (ioService.equals(IOService.FILE_IO)) ;
         return new PayRollFileIO().countDataOfPayBill();
     }
 
-    public List<PayRoll> readFileEntries(IOService ioService){
-        if(ioService.equals(IOService.FILE_IO));
+    public List<PayRoll> readFileEntries(IOService ioService) {
+        if (ioService.equals(IOService.FILE_IO)) ;
         return new PayRollFileIO().readData();
     }
 
+    public List<PayRoll> readEmployeeDetails(IOService ioService) {
+        if (ioService.equals(IOService.DB_IO))
+            this.payRollList = new PayRollDataBaseIO().readData();
+        return this.payRollList;
+    }
+
+    public enum IOService {
+        CONSOLE_IO, FILE_IO, DB_IO, REST_IO
+    }
 }

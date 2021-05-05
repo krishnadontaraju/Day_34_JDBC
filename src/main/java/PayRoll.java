@@ -1,4 +1,9 @@
+import java.sql.Date;
+
 public class PayRoll {
+    private Date employeeStartDate;
+    private int employeePhoneNumber;
+    private String employeeGender;
     public int employeeId;
     public String employeeName;
     public double employeeSalary;
@@ -7,6 +12,16 @@ public class PayRoll {
         this.employeeId = employeeId;
         this.employeeName = employeeName;
         this.employeeSalary = employeeSalary;
+    }
+
+    public PayRoll(int id, String name, String gender, int phoneNumber, Date startDate) {
+
+        employeeId = id;
+        employeeName = name;
+        employeeStartDate = startDate;
+        employeePhoneNumber = phoneNumber;
+        employeeGender = gender;
+
     }
 
     @Override
