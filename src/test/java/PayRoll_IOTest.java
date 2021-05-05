@@ -32,6 +32,5 @@ public class PayRoll_IOTest {
         List<PayRoll>  dbPayRollData = dbPayRoll.readEmployeeDetails(PayRollOperation.IOService.DB_IO);
 
         Assertions.assertEquals(8,dbPayRollData.size());
-
     }
 }
