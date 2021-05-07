@@ -10,7 +10,8 @@ public class Exceptions extends Exception {
 
     enum exceptionType{
         NULL_INPUT,
-        SQL_EXCEPTION;
+        SQL_EXCEPTION,
+
 
     }
 }
