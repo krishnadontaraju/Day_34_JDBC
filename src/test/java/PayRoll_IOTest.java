@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,6 +56,27 @@ public class PayRoll_IOTest {
 
         boolean isUpdated = employeePayRollOperation.checkEmployeeSynchronizationWithDatabase("Alicia");
         Assertions.assertTrue(isUpdated);
+
+    }
+
+
+    /**
+     * UC-5 test case to check the retrieval of employees
+     * in a date range is correct
+     *
+     * @throws Exceptions
+     */
+
+    @Test
+    public void givenDateRange_whenRetrieved_shouldMatchEmployeeCount() throws Exceptions {
+        PayRollOperation employeePayRollOperation = new PayRollOperation();
+        employeePayRollOperation.readEmployeeDetails(PayRollOperation.IOService.DB_IO);
+        LocalDate fromDate = LocalDate.of(2010, 01, 01);
+        LocalDate toDate = LocalDate.now();
+
+        List<PayRoll> dateRangeData = employeePayRollOperation.retrievePayRollForDateRange(PayRollOperation.IOService.DB_IO, fromDate, toDate);
+
+        Assertions.assertEquals(3, dateRangeData.size());
 
     }
 }
