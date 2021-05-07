@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class PayRoll_IOTest {
     @Test
@@ -79,4 +80,41 @@ public class PayRoll_IOTest {
         Assertions.assertEquals(3, dateRangeData.size());
 
     }
+
+
+    /**
+     *
+     * checking the retrieval of average salary by gender
+     *
+     * @throws Exceptions
+     * @throws SQLException
+     */
+
+    @Test
+    public void givenPayRollData_whenRetrievedAverageSalary_ShouldMatchWithTheValue() throws Exceptions{
+        PayRollOperation employeePayRollOperation = new PayRollOperation();
+        employeePayRollOperation.readEmployeeDetails(PayRollOperation.IOService.DB_IO);
+        Map<String,Integer> averageSalaryByGender = employeePayRollOperation.getArithmeticOperationalFunctionsOfSalaryByGender(PayRollOperation.IOService.DB_IO,"AVG");
+
+        Assertions.assertTrue(averageSalaryByGender.get("M").equals(403564) && averageSalaryByGender.get("F").equals(7098229));
+    }
+
+    /**
+     *
+     * checking the correct retrieval of
+     * Max salary by gender
+     *
+     * @throws Exceptions
+     */
+
+    @Test
+    public void givenPayRollData_whenRetrievedMaxSalary_ShouldMatchWithTheValue() throws Exceptions{
+        PayRollOperation employeePayRollOperation = new PayRollOperation();
+        employeePayRollOperation.readEmployeeDetails(PayRollOperation.IOService.DB_IO);
+        Map<String,Integer> averageSalaryByGender = employeePayRollOperation.getArithmeticOperationalFunctionsOfSalaryByGender(PayRollOperation.IOService.DB_IO,"MAX");
+
+        Assertions.assertTrue(averageSalaryByGender.get("M").equals(5647894) && averageSalaryByGender.get("F").equals(300000000));
+    }
+
+
 }
