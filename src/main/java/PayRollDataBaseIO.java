@@ -1,7 +1,9 @@
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PayRollDataBaseIO {
 
@@ -17,6 +19,8 @@ public class PayRollDataBaseIO {
             payRollDataBaseIO = new PayRollDataBaseIO();
         return payRollDataBaseIO;
     }
+
+
 
     /**
      * read the entries from database and store it to payroll list
@@ -246,4 +250,51 @@ public class PayRollDataBaseIO {
         return payRollList;
 
     }
+
+    /**
+     *
+     * using this method retrieve various sql methods by gender
+     * and mapping that with the gender
+     *
+     * @return
+     * @throws Exceptions
+     * @param function
+     */
+
+    public Map<String, Integer> getArithmeticOperationalFunctionsOfSalaryByGender(String function) throws Exceptions {
+        String sqlQuery = String.format("SELECT e.gender , %s(p.basic_pay) as avg_basic_pay FROM pay_info p " +
+                "JOIN employee_details e WHERE e.pay_info_id = p.id AND p.basic_pay IN " +
+                "(" +
+                "SELECT max(p2.basic_pay) FROM pay_info p2 " +
+                "JOIN employee_details e2 WHERE e2.pay_info_id = p2.id" +
+                "GROUP BY e2.gender" +
+                ")" +
+                "GROUP BY e.gender;",function);
+        Map<String, Integer> genderBySalaryMap = new HashMap<>();
+
+        try (Connection mySqlConnection = this.getConnection()) {
+
+            Statement sqlStatement = mySqlConnection.createStatement();
+            ResultSet resultSet = sqlStatement.executeQuery(sqlQuery);
+
+            while (resultSet.next()) {
+
+                String gender = resultSet.getString("gender");
+                Integer salary = resultSet.getInt("avg_basic_pay");
+
+                genderBySalaryMap.put(gender, salary);
+
+            }
+
+        } catch (SQLException e) {
+            throw new Exceptions(Exceptions.exceptionType.SQL_EXCEPTION, "YOUR SQL CONNECTION WAS NOT CORRECT, CHECK AGAIN");
+            //Catching Null pointer exception
+        } catch (NullPointerException e) {
+            throw new Exceptions(Exceptions.exceptionType.NULL_INPUT, "YOUR INPUT WAS NULL, PLEASE CHECK AGAIN");
+
+        }
+
+        return genderBySalaryMap;
+    }
+
 }

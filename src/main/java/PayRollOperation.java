@@ -2,6 +2,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class PayRollOperation {
@@ -135,6 +136,22 @@ public class PayRollOperation {
     public List<PayRoll> retrievePayRollForDateRange(IOService ioService, LocalDate fromDate, LocalDate toDate) throws Exceptions {
         if (ioService.equals(IOService.DB_IO))
             return PayRollDataBaseIO.getInstance().getEmployeeForDateRange(fromDate, toDate);
+        return null;
+    }
+
+    /**
+     *
+     * Using this method as a layer to call on the
+     * DB io class' arithmetic methods
+     *
+     * @param ioService
+     * @param function
+     * @return
+     * @throws Exceptions
+     */
+    public Map<String, Integer> getArithmeticOperationalFunctionsOfSalaryByGender(IOService ioService, String function) throws Exceptions {
+        if (ioService.equals(IOService.DB_IO))
+            return PayRollDataBaseIO.getInstance().getArithmeticOperationalFunctionsOfSalaryByGender(function);
         return null;
     }
 
