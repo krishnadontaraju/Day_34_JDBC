@@ -5,6 +5,8 @@ import java.util.List;
 public class PayRollDataBaseIO {
 
 
+    private PreparedStatement employeeInformationStatement;
+
     /**
      * read the entries from database and store it to payroll list
      *
@@ -46,16 +48,14 @@ public class PayRollDataBaseIO {
     /*   The method here calls the method below   */
 
     public int updateEmployeeData(String name, int salary) throws Exceptions {
-        return this.updateEmployeeDataUsingStatement(name, salary);
+        return this.updateEmployeeDataUsingPreparedStatement(name, salary);
     }
 
 
     /**
-     *
      * Updating employee details with query,
      * here, the database is segregated owing to the
      * EER Diagram so, used joins to retrieve basic_pay
-     *
      *
      * @param name
      * @param salary
@@ -63,13 +63,13 @@ public class PayRollDataBaseIO {
      * @throws Exceptions
      */
 
-    private int updateEmployeeDataUsingStatement(String name, int salary) throws Exceptions {
+    private int updateEmployeeDataUsingPreparedStatement(String name, int salary) throws Exceptions {
 
-        String sqlQuery = String.format("UPDATE pay_info p\n" +
-                "INNER JOIN \n" +
-                "employee_details e \n" +
-                "ON p.id = e.pay_info_id\n" +
-                "SET p.basic_pay = %d\n" +
+        String sqlQuery = String.format("UPDATE pay_info p" +
+                "INNER JOIN " +
+                "employee_details e " +
+                "ON p.id = e.pay_info_id" +
+                "SET p.basic_pay = %d" +
                 "WHERE e.name = '%s';", salary, name);
 
         try (Connection mySqlConnection = this.getConnection()) {
@@ -80,6 +80,28 @@ public class PayRollDataBaseIO {
         } catch (NullPointerException e) {
             throw new Exceptions(Exceptions.exceptionType.NULL_INPUT, "YOU HAVE GIVEN A NULL INPUT, PLEASE TRY AGAIN !");
         }
+    }
+
+
+    /**
+     * this method is responsible to prepare
+     * the statement to retrieve the employee pay details
+     */
+
+    private void prepareStatementForSalaryRetrieval() {
+
+        try {
+            Connection mySqlConnection = this.getConnection();
+            String sqlQuery = "SELECT * FROM employee_details e " +
+                    "JOIN pay_info p ON e.pay_info_id = p.id " +
+                    "WHERE NAME = ?";
+
+            employeeInformationStatement = mySqlConnection.prepareStatement(sqlQuery);
+        } catch (SQLException e) {
+            /*      an unknown error within intellij forced me no to use custom exception       */
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -106,10 +128,8 @@ public class PayRollDataBaseIO {
 
 
     /**
-     *
      * The parent method which calls the below method for
      * details on pay Information
-     *
      *
      * @param name
      * @return
@@ -119,12 +139,13 @@ public class PayRollDataBaseIO {
     public List<PayRoll> getPayRollInformation(String name) throws SQLException {
         List<PayRoll> employeePayRollList = null;
 
-        Connection mySqlConnection = this.getConnection();
-        String payInformationRetrievalQuery = "SELECT e.name , p.basic_pay , p.deductions , p.taxable_pay , p.net_pay FROM employee_details e JOIN pay_info p ON e.pay_info_id = p.id;";
+        if (this.employeeInformationStatement == null)
+            this.prepareStatementForSalaryRetrieval();
+
         try {
 
-            Statement retrievalStatement = mySqlConnection.createStatement();
-            ResultSet resultSet = retrievalStatement.executeQuery(payInformationRetrievalQuery);
+            employeeInformationStatement.setString(1, name);
+            ResultSet resultSet = employeeInformationStatement.executeQuery();
 
             employeePayRollList = this.getPayRollInformation(resultSet);
 
@@ -135,11 +156,10 @@ public class PayRollDataBaseIO {
         return employeePayRollList;
     }
 
+
     /**
-     *
      * Method to get the employee pay information
      * to be later used at synchronization checking
-     *
      *
      * @param resultSet
      * @return
@@ -162,7 +182,7 @@ public class PayRollDataBaseIO {
                 payRollList.add(new PayRoll(name, salary, deductions, taxes, net_pay));
             }
         } catch (SQLException e) {
-            throw new Exceptions(Exceptions.exceptionType.SQL_EXCEPTION,"THERE WAS AN ERROR WITH RETRIEVAL, PLEASE TRY AGAIN");
+            throw new Exceptions(Exceptions.exceptionType.SQL_EXCEPTION, "THERE WAS AN ERROR WITH RETRIEVAL, PLEASE TRY AGAIN");
         }
 
         return payRollList;
