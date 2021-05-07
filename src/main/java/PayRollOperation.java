@@ -1,4 +1,5 @@
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -67,7 +68,7 @@ public class PayRollOperation {
 
     public List<PayRoll> readEmployeeDetails(IOService ioService) throws Exceptions {
         if (ioService.equals(IOService.DB_IO))
-            this.payRollList = new PayRollDataBaseIO().readData();
+            this.payRollList = PayRollDataBaseIO.getInstance().readData();
         return this.payRollList;
     }
 
@@ -82,7 +83,7 @@ public class PayRollOperation {
      */
 
     public void updateEmployeeSalary(String name, int salary) throws Exceptions {
-        int updateResult = new PayRollDataBaseIO().updateEmployeeData(name, salary);
+        int updateResult = PayRollDataBaseIO.getInstance().updateEmployeeData(name, salary);
         if (updateResult == 0)
             return;
         PayRoll employeePayRoll = this.getPayRollData(name);
@@ -116,8 +117,25 @@ public class PayRollOperation {
 
 
     public boolean checkEmployeeSynchronizationWithDatabase(String name) throws SQLException {
-        List<PayRoll> employeePayRollList = new PayRollDataBaseIO().getPayRollInformation(name);
+        List<PayRoll> employeePayRollList = PayRollDataBaseIO.getInstance().getPayRollInformation(name);
         return employeePayRollList.get(0).equals(getPayRollData(name));
+    }
+
+    /**
+     * Creating A method as layer to call on the respective
+     * method to retrieve employees from date range
+     *
+     * @param ioService
+     * @param fromDate
+     * @param toDate
+     * @return
+     * @throws Exceptions
+     */
+
+    public List<PayRoll> retrievePayRollForDateRange(IOService ioService, LocalDate fromDate, LocalDate toDate) throws Exceptions {
+        if (ioService.equals(IOService.DB_IO))
+            return PayRollDataBaseIO.getInstance().getEmployeeForDateRange(fromDate, toDate);
+        return null;
     }
 
     public enum IOService {

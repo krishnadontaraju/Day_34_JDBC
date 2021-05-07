@@ -1,11 +1,22 @@
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PayRollDataBaseIO {
 
 
+    private static PayRollDataBaseIO payRollDataBaseIO;
     private PreparedStatement employeeInformationStatement;
+
+    private PayRollDataBaseIO() {
+    }
+
+    public static PayRollDataBaseIO getInstance() {
+        if (payRollDataBaseIO == null)
+            payRollDataBaseIO = new PayRollDataBaseIO();
+        return payRollDataBaseIO;
+    }
 
     /**
      * read the entries from database and store it to payroll list
@@ -186,5 +197,53 @@ public class PayRollDataBaseIO {
         }
 
         return payRollList;
+    }
+
+    /**
+     * method takes in the dates as input and finds the employees
+     * in that date range
+     *
+     * @param fromDate
+     * @param toDate
+     * @return
+     * @throws Exceptions
+     */
+
+    public List<PayRoll> getEmployeeForDateRange(LocalDate fromDate, LocalDate toDate) throws Exceptions {
+
+        String sqlQuery = String.format("SELECT * FROM employee_details WHERE start BETWEEN %s AND %s;", Date.valueOf(fromDate), Date.valueOf(toDate));
+        return this.getEmployeeInformation(sqlQuery);
+    }
+
+    /**
+     * this method gets the employee details according to the query
+     *
+     * @param sqlQuery
+     * @return
+     * @throws Exceptions
+     */
+
+    private List<PayRoll> getEmployeeInformation(String sqlQuery) throws Exceptions {
+
+        List<PayRoll> payRollList;
+
+        try (Connection sqlConnection = this.getConnection()) {
+
+            Statement queryStatement = sqlConnection.createStatement();
+
+            ResultSet queryResult = queryStatement.executeQuery(sqlQuery);
+
+            payRollList = this.getPayRollInformation(queryResult);
+
+            //Catching Sql Exception
+        } catch (SQLException e) {
+            throw new Exceptions(Exceptions.exceptionType.SQL_EXCEPTION, "YOUR SQL CONNECTION WAS NOT CORRECT, CHECK AGAIN");
+            //Catching Null pointer exception
+        } catch (NullPointerException e) {
+            throw new Exceptions(Exceptions.exceptionType.NULL_INPUT, "YOUR INPUT WAS NULL, PLEASE CHECK AGAIN");
+        }
+
+        return payRollList;
+
     }
 }
